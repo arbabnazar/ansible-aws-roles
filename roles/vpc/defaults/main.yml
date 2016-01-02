@@ -1,0 +1,36 @@
+---
+# Variables that can provide as extra vars
+VPC_NAME: test
+VPC_REGION: us-east-1 # N.Virginia
+VPC_CIDR: "172.25.0.0/16"
+VPC_CLASS_DEFAULT: "172.25"
+
+# Variables for VPC
+vpc_name: "{{ VPC_NAME }}"
+vpc_region: "{{ VPC_REGION }}"
+vpc_cidr_block: "{{ VPC_CIDR }}"
+public_cidr_1: "{{ VPC_CLASS_DEFAULT }}.10.0/24"
+public_az_1: "{{ vpc_region }}a"
+public_cidr_2: "{{ VPC_CLASS_DEFAULT }}.20.0/24"
+public_az_2: "{{ vpc_region }}b"
+private_cidr_1: "{{ VPC_CLASS_DEFAULT }}.30.0/24"
+private_az_1: "{{ vpc_region }}a"
+private_cidr_2: "{{ VPC_CLASS_DEFAULT }}.40.0/24"
+private_az_2: "{{ vpc_region }}b"
+
+# Please don't change the variables below, until you know what you are doing
+#
+# Subnets Defination for VPC
+vpc_subnets:
+  - cidr: "{{ public_cidr_1 }}" # Public Subnet-1
+    az: "{{ public_az_1 }}"
+    resource_tags: { "Name":"{{ vpc_name }}-{{ public_az_1 }}-public_subnet-1", "Type":"Public", "Alias":"Public_Subnet_1" }
+  - cidr: "{{ public_cidr_2 }}" # Public Subnet-2
+    az: "{{ public_az_2 }}"
+    resource_tags: { "Name":"{{ vpc_name }}-{{ public_az_2 }}-public-subnet-2", "Type":"Public", "Alias":"Public_Subnet_2" }
+  - cidr: "{{ private_cidr_1 }}" # Private Subnet-1
+    az: "{{ private_az_1 }}"
+    resource_tags: { "Name":"{{ vpc_name }}-{{ private_az_1 }}-private-subnet-1", "Type":"Private", "Alias":"Private_Subnet_1" }
+  - cidr: "{{ private_cidr_2 }}" # Private Subnet-2
+    az: "{{ private_az_2 }}"
+    resource_tags: { "Name":"{{ vpc_name }}-{{ private_az_2 }}-private-subnet-2", "Type":"Private", "Alias":"Private_Subnet_2" }

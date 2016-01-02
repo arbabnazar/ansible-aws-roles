@@ -1,0 +1,49 @@
+---
+- name: Creating an AWS VPC inside mentioned Region
+  ec2_vpc:
+    region: "{{ vpc_region }}"
+    state:  present
+    cidr_block: "{{ vpc_cidr_block }}"
+    resource_tags: { "Name":"{{ vpc_name }}-vpc", "Environment":"{{ ENVIRONMENT }}" }
+    subnets: "{{ vpc_subnets }}" 
+    internet_gateway: yes
+  register: vpc
+
+- name: Set up Public Subnets Route Table
+  ec2_vpc_route_table:
+    vpc_id: "{{ vpc.vpc_id }}"
+    region: "{{ vpc_region }}"
+    state: present
+    tags:
+      Name: "Public-RT-for-{{ vpc_name }}-vpc"
+    subnets:
+      "{{ vpc.subnets | get_public_subnets_ids('Type','Public') }}"
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ vpc.igw_id }}"
+  register: public_rt
+
+- name: "Create {{ vpc_name }}.yml file inside the secret_vars directory"
+  lineinfile: 
+    dest: "secret_vars/{{ vpc_name }}.yml"
+    line: "---"
+    create: yes
+
+- name: "Write vpc info to {{ vpc_name }}.yml file inside the secret_vars directory"
+  lineinfile:
+    dest: "secret_vars/{{ vpc_name }}.yml"
+    regexp: "^{{ item.regexp | upper }}"
+    line: "{{ item.regexp | upper }}: {{ '\"' + item.line + '\"' }}"
+  with_items:
+    - { regexp: 'vpc_id', line: '{{ vpc.vpc_id }}' }
+    - { regexp: 'igw', line: '{{ vpc.igw_id }}' }
+    - { regexp: 'route_table_id', line: '{{ public_rt.route_table.id }}' }
+
+- name: "Write public and private subnets ids to {{ vpc_name }}.yml file inside the secret_vars directory"
+  lineinfile:
+    dest: "secret_vars/{{ vpc_name }}.yml"
+    regexp: "^{{ item.resource_tags.Alias | upper }}"
+    line: "{{ item.resource_tags.Alias | upper }}: {{ '\"' + item.id + '\"' }}"
+  with_items: vpc.subnets
+  
+- include_vars: "secret_vars/{{ vpc_name }}.yml"
