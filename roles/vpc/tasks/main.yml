@@ -9,6 +9,15 @@
     internet_gateway: yes
   register: vpc
 
+- name: Tag the Internet Gateway
+  ec2_tag:
+    resource: "{{ vpc.igw_id }}"
+    region: "{{ vpc_region }}"
+    state: present
+    tags:
+      Name: "{{ vpc_name }}-igw"
+  register: igw
+
 - name: Set up Public Subnets Route Table
   ec2_vpc_route_table:
     vpc_id: "{{ vpc.vpc_id }}"
