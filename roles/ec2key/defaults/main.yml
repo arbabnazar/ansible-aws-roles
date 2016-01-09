@@ -1,0 +1,26 @@
+---
+# Variables that can provide as extra vars
+VPC_REGION: us-east-1 # N.Virginia
+GITHUB_USERNAME: no
+EC2_KEY_NAME: "my-default-key"
+LOCAL_USER_SSH_KEY: yes
+
+# If you don't want to use any of this service, just set it's value to 'none'
+# For example:
+# If you want to use github ssh key as your key on the EC2, just mentioned your username
+#
+# github_username: arbabnazar
+#
+# and set the other variable as none or if you want to use local key over EC2 then do like this
+#
+# local_ssh_key: yes
+# 
+# and 
+#
+# github_username: no
+
+# Use inside the tasks
+vpc_region: "{{ VPC_REGION }}"
+github_username: "{{ GITHUB_USERNAME }}"
+local_user_ssh_key: "{{ LOCAL_USER_SSH_KEY }}"
+ec2_key_name: "{{ EC2_KEY_NAME }}"

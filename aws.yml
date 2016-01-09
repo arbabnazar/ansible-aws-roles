@@ -4,3 +4,5 @@
   gather_facts: no   
   roles:
     - vpc
+    - ec2sg
+    - ec2key

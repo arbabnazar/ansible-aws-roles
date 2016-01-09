@@ -1,0 +1,21 @@
+---
+- name: Creating an EC2 Security Group inside the Mentioned VPC
+  ec2_group:
+    name: "{{ item.name }}"
+    description: "{{ item.description }}"
+    region: "{{ vpc_region }}" 
+    vpc_id: "{{ VPC_ID }}" # Came from ENV specific secret file
+    state: present
+    rules: "{{ item.rules }}"
+  with_items: ec2_security_groups
+  register: aws_sg
+
+- name: Tag the Security Groups with Distinguished Name
+  ec2_tag:
+    resource: "{{ item.group_id }}"
+    region: "{{ vpc_region }}"
+    state: present
+    tags:
+      Name: "{{ item.item.name }}"
+      Environment: "{{ Environment }}"
+  with_items: aws_sg.results

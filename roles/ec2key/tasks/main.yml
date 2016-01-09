@@ -1,0 +1,46 @@
+---
+- block:
+    - name: "Grab key for {{ github_username }} user from github.com"
+      shell: >
+        curl "https://github.com/{{ github_username }}.keys"
+      register: github_key_result
+      changed_when: no
+
+    - name: Creates an new ec2 key with mentioned name if not present
+      ec2_key:
+        region: "{{ vpc_region }}"
+        name: "{{ ec2_key_name }}"
+        key_material:  "{{ github_key_result.stdout }}"
+
+  when: github_username and github_username |lower != 'no' and not local_user_ssh_key
+
+- block:
+    - name: Find the current login user
+      command: whoami
+      register: login_user
+      changed_when: no
+
+    - name: Set the Key location as fact
+      set_fact: 
+        ssh_key_location: "/home/{{ login_user.stdout }}/.ssh/id_rsa.pub"
+
+    - name: "Check that the SSH Key exists for {{ login_user.stdout }} user"
+      stat:
+        path: "{{ ssh_key_location }}"
+      register: sshkey_result
+
+    - name: "Generating a new SSH key for {{ login_user.stdout }} user it does not exists already"
+      user:
+        name: "{{ login_user.stdout }}"
+        generate_ssh_key: yes 
+        ssh_key_bits: 2048
+      when: sshkey_result.stat.exists == False
+
+    - name: Creates an new ec2 key with mentioned name if not present
+      ec2_key:
+        region: "{{ vpc_region }}"
+        name: "{{ ec2_key_name }}"
+        key_material:  "{{ lookup('file',  ssh_key_location ) }}"
+
+  when: local_user_ssh_key and not github_username
+
