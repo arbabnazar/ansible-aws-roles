@@ -6,3 +6,5 @@
     - vpc
     - ec2sg
     - ec2key
+    - ec2instance
+    - elb
