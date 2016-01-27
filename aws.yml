@@ -8,3 +8,4 @@
     - ec2key
     - ec2instance
     - elb
+    - rds

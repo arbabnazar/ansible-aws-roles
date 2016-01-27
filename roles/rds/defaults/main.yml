@@ -1,0 +1,36 @@
+---
+# Variables that can provide as extra vars
+VPC_REGION: us-east-1 # N.Virginia
+RDS_SUBNET_GROUP_NAME: "my_test_subnet_group"
+RDS_SG_DESCRIPTION: "My Subnet Group for wordpress rds instance"
+RDS_SG_SUBNETS: []
+RDS_MULTI_ZONE_OPTION: no
+RDS_SG_NAME: "test_rd_sg"
+RDS_INSTANCE_NAME: "my-test-rds"
+RDS_DB_ENGINE: MySQL
+RDS_DB_SIZE: 5
+RDS_DB_NAME: "rds_test"
+RDS_INSTANCE_TYPE: "db.t2.micro"
+RDS_DB_USERNAME: admin
+RDS_DB_PASSWORD: test
+RDS_BACKUP_RETENTION_PERIOD: 0
+RDS_PUBLICLY_ACCESSIBLE: yes
+RDS_WAIT_TIMEOUT: 300
+
+# Use inside the tasks
+vpc_region: "{{ VPC_REGION }}"
+rds_subnet_group_name: "{{ RDS_SUBNET_GROUP_NAME }}"
+rds_sg_description: "{{ RDS_SG_DESCRIPTION }}"
+rds_sg_subnets: "{{ RDS_SG_SUBNETS }}"
+rds_multi_zone_option: "{{ RDS_MULTI_ZONE_OPTION }}"
+rds_sg_name: "{{ RDS_SG_NAME }}"
+rds_instance_name: "{{ RDS_INSTANCE_NAME }}"
+rds_db_engine: "{{ RDS_DB_ENGINE }}"
+rds_db_size: "{{ RDS_DB_SIZE }}"
+rds_db_name: "{{ RDS_DB_NAME }}"
+rds_instance_type: "{{ RDS_INSTANCE_TYPE }}"
+rds_db_username: "{{ RDS_DB_USERNAME }}"
+rds_db_password: "{{ RDS_DB_PASSWORD }}"
+rds_backup_retention_period: "{{ RDS_BACKUP_RETENTION_PERIOD }}"
+rds_publicly_accessible: "{{ RDS_PUBLICLY_ACCESSIBLE }}"
+rds_wait_timeout: "{{ RDS_WAIT_TIMEOUT }}"

@@ -1,0 +1,38 @@
+---
+- name: Create RDS Subnet Group
+  rds_subnet_group:
+    region: "{{ vpc_region }}"
+    state: present
+    name: "{{ rds_subnet_group_name }}"
+    description: "{{ rds_sg_description }}"
+    subnets: "{{ rds_sg_subnets }}"
+
+- name: Provisioning RDS Instance
+  rds:
+    command: create
+    region: "{{ vpc_region }}"
+    multi_zone: "{{ rds_multi_zone_option }}"
+    subnet: "{{ rds_subnet_group_name }}"
+    vpc_security_groups: "{{ lookup('get_sg_id_from_name', (vpc_region, rds_sg_name)) }}" 
+    instance_name: "{{ rds_instance_name }}"
+    db_engine: "{{ rds_db_engine }}"
+    size: "{{ rds_db_size }}"
+    db_name: "{{ rds_db_name }}"
+    instance_type: "{{ rds_instance_type }}"
+    username: "{{ rds_db_username }}"
+    password: "{{ rds_db_password }}"
+    backup_retention: "{{ rds_backup_retention_period }}"
+    wait: yes
+    publicly_accessible: "{{ rds_publicly_accessible }}"
+    wait_timeout: "{{ rds_wait_timeout }}"
+    tags:
+      Environment: "{{ ENVIRONMENT }}"
+  register: rds
+
+- name: "Write RDS endpoint to {{ vpc_name }}.yml file inside the secret_vars directory"
+  lineinfile:
+    dest: "secret_vars/{{ vpc_name }}.yml"
+    regexp: "^RDS_ENDPOINT"
+    line: "RDS_ENDPOINT: {{ '\"' + rds.instance.endpoint + '\"' }}"
+
+- include_vars: "secret_vars/{{ vpc_name }}.yml"
