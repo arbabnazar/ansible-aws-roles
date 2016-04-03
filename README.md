@@ -1,5 +1,6 @@
 Ansible Roles for AWS Infrastructure Creation
 ----------------------
+There's a series of blog post that I wrote to go along with these roles. [Check it out!](https://rbgeek.wordpress.com/2016/01/04/aws-infrastructure-creation-with-ansible-part-1/)
 
 The purpose of these Ansible roles are to create the complete infrastructure over AWS using Ansible, which include:
 
