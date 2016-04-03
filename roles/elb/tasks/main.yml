@@ -20,7 +20,7 @@
     instance_id: "{{ item }}"
     wait: yes
     state: present
-  with_items: instances_id_list
+  with_items: "{{ instances_id_list }}"
   when: not(instances_id_list is undefined or instances_id_list is none or instances_id_list | trim == '')
 
 - name: "Write ELB url to {{ vpc_name }}.yml file inside the secret_vars directory"

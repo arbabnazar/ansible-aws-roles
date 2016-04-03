@@ -17,7 +17,7 @@
     keypair: "{{ ec2_key_name }}"
     instance_type: "{{ ec2_instance_type }}"
     image: "{{ ami_find_result.results[0].ami_id }}"
-    vpc_subnet_id: "{{ item }}"
+    vpc_subnet_id: "{{ item.1 }}"
     assign_public_ip: yes
     wait: True
     wait_timeout: 600
@@ -25,7 +25,7 @@
               #!/bin/sh
               sudo apt-get install nginx -y
     instance_tags:
-      Name: "{{ vpc_name }}-{{ SERVER_ROLE }}"
+      Name: "{{ vpc_name }}-{{ SERVER_ROLE }}-0{{ item.0 + 1 }}"
       Environment: "{{ ENVIRONMENT }}"
       Server_Role: "{{ SERVER_ROLE }}"
     volumes:
@@ -34,7 +34,7 @@
         volume_size: "{{ ec2_volume_size }}"
         delete_on_termination: yes
     count: "{{ ec2_count }}"
-  with_items: ec2_subnet_id
+  with_indexed_items: "{{ ec2_subnet_id }}"
   register: ec2
 
 - set_fact:

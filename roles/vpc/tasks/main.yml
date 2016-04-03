@@ -53,6 +53,6 @@
     dest: "secret_vars/{{ vpc_name }}.yml"
     regexp: "^{{ item.resource_tags.Alias | upper }}"
     line: "{{ item.resource_tags.Alias | upper }}: {{ '\"' + item.id + '\"' }}"
-  with_items: vpc.subnets
+  with_items: "{{ vpc.subnets }}"
   
 - include_vars: "secret_vars/{{ vpc_name }}.yml"
