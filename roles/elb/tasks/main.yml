@@ -10,6 +10,7 @@
     cross_az_load_balancing: "{{ elb_cross_az_load_balancing }}"
     connection_draining_timeout: "{{ elb_connection_draining_timeout }}"
     listeners: "{{ elb_listeners }}"
+    stickiness: "{{ elb_stickiness }}"
     health_check: "{{ elb_health_check }}"
   register: elb
 
