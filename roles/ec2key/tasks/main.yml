@@ -1,16 +1,16 @@
 ---
 - block:
     - name: "Grab key for {{ github_username }} user from github.com"
-      shell: >
-        curl "https://github.com/{{ github_username }}.keys"
+      uri:
+        url: "https://github.com/{{ github_username }}.keys"
+        return_content: yes
       register: github_key_result
-      changed_when: no
 
     - name: Creates an new ec2 key with mentioned name if not present
       ec2_key:
         region: "{{ vpc_region }}"
         name: "{{ ec2_key_name }}"
-        key_material:  "{{ github_key_result.stdout }}"
+        key_material:  "{{ github_key_result.content }}"
 
   when: github_username and github_username |lower != 'no' and not local_user_ssh_key
 
