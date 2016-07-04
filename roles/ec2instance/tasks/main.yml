@@ -52,5 +52,6 @@
   wait_for:
     host: "{{ item }}" 
     port: 22 
-    state: started
+    search_regex: OpenSSH
+    delay: 10
   with_items: "{{ ec2.results | get_ec2_info('public_ip') }}" 
